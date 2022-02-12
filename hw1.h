@@ -1,7 +1,7 @@
 #define TRUE    1
 #define FALSE   0
 
-int inputyear(void);
+
 int determinedaycode(int year);
 int determineleapyear(int year);
 void printSpecifiedDateandMonth(int year,int month,int daycode);

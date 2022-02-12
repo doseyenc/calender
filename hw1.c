@@ -23,16 +23,11 @@ char *months[]=
 	"\n\n\nNovember",
 	"\n\n\nDecember"
 };
-
-
-int inputyear(void)
-{
-	int year;
-	
-	printf("Please enter a year (example: 1999) : ");
-	scanf("%d", &year);
-	return year;
+int main(int argc,char* argv[]){
+	takeInput(argc,argv);
 }
+
+
 int determinedaycode(int year)
 {
 	int daycode;
@@ -59,6 +54,13 @@ int determineleapyear(int year)
 }
 void printSpecifiedDateandMonth(int year,int month,int daycode){
 	int day;
+	int monthsDays;
+	if(determineleapyear(year)==1 && month ==2){
+		monthsDays=29;
+	}
+	else{
+		monthsDays=days_in_month[month];
+	}
 	printf("%s", months[month]);
 	printf("\n\nSun  Mon  Tue  Wed  Thu  Fri  Sat\n" );
 		
@@ -67,7 +69,8 @@ void printSpecifiedDateandMonth(int year,int month,int daycode){
 			printf(" ");
 		}
 		
-		for ( day = 1; day <= days_in_month[month]; day++ )
+		
+		for ( day = 1; day <= monthsDays; day++ )
 		{
 			printf("%2d", day );
 			
@@ -83,28 +86,12 @@ void calendar(int year, int daycode)
 	int month, day;
 	for ( month = 1; month <= 12; month++ )
 	{
-		printf("%s", months[month]);
-		printf("\n\nSun  Mon  Tue  Wed  Thu  Fri  Sat\n" );
+		printSpecifiedDateandMonth( year, month, daycode);
 		
-		for ( day = 1; day <= 1 + daycode * 5; day++ )
-		{
-			printf(" ");
-		}
-		
-		for ( day = 1; day <= days_in_month[month]; day++ )
-		{
-			printf("%2d", day );
-			
-			if ( ( day + daycode ) % 7 > 0 )
-				printf("   " );
-			else
-				printf("\n " );
-		}
-			daycode = ( daycode + days_in_month[month] ) % 7;
 	}
 }
 void giveInfo(){
-	char str[]="NAME\nDisplays a calender and the date\n\nThe options are as follows\n-h shows the required information\n	-m month Display the specified month the argument may be number between 1-12 or full name of month or may be abbreviation of mont(January/jan/1)\n-y year takes a specified year and shows the calender of that year\n";
+	char str[]="NAME\nDisplays a calender and the date.\n\nThe options are as follows\n-h shows the required information\n-m month Display the specified month the argument may be number between 1-12 or full name of month or may be abbreviation of month(January/jan/1)\n-y year takes a specified year and shows the calender of that year\n";
 	printf("%s",str);
 }
 void printMonth(int month,int daycode){
@@ -114,24 +101,20 @@ void printMonth(int month,int daycode){
 		printf("%s", months[month]);
 		printf("\n\nSun  Mon  Tue  Wed  Thu  Fri  Sat\n" );
 		
-		// Correct the position for the first date
 		for ( day = 1; day <= 1 + daycode * 5; day++ )
 		{
 			printf(" ");
 		}
 		
-		// Print all the dates for one month
 		for ( day = 1; day <= days_in_month[month]; day++ )
 		{
 			printf("%2d", day );
 			
-			// Is day before Sat? Else start next line Sun.
 			if ( ( day + daycode ) % 7 > 0 )
 				printf("   " );
 			else
 				printf("\n " );
 		}
-			// Set position for next month
 			daycode = ( daycode + days_in_month[month] ) % 7;
 
 }
@@ -204,13 +187,13 @@ int checker(char input[],char check[])
     return result;
 }
 void takeInput(int argc,char* argv[]){
-	int year=2022;
+	int year=0;
 	int month=0;
 	int infoGived=0;
+	
 	for (int i = 0; i < argc; i++)
 	{
-		//printf("%s\n",argv[i]);
-		//printf("%d",argc);
+		
 		if ( argc == 1 || checker(argv[i],"-h")==1 )
 		{
 			giveInfo();
@@ -219,18 +202,13 @@ void takeInput(int argc,char* argv[]){
 		}
 		if (checker(argv[i],"-y")==1)
 		{
-			//printf("-y****");
 			year=stringToInt(argv[i+1]);
-			//printf("year :%d",year);
 		}
 		if (checker(argv[i],"-m")==1)
 		{
-			//printf("-m****");
 			month=specifiedMonth(argv[i+1]);
-			//printf("month %d",month);
 		}
 	}
-	//printf("year: %d ,month: %d ",year,month);
 	if (infoGived == 0)
 	{
 		if (month==0)
@@ -239,10 +217,10 @@ void takeInput(int argc,char* argv[]){
 			determineleapyear(year);
 			calendar(year, daycode);
 		}
-		if (year==2022)
+		if (year==0)
 		{
-			int daycode = determinedaycode(year);
-			printMonth(year,daycode);
+			int daycode = determinedaycode(2022);
+			printMonth(month,daycode);
 		}
 		else{
 				int daycode = determinedaycode(year);
@@ -256,9 +234,4 @@ void takeInput(int argc,char* argv[]){
 	
 	
 }
-int main(int argc,char* argv[])
-{
-	
-	takeInput(argc,argv);
-	
-}
+
